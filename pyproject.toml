@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scisearch"
+version = "1.0.0"
+description = "Exploratory Scientific Literature Search — hybrid (dense + BM25) paper search with a trainable retriever, faceting/clustering, and an agentic pipeline"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Le Dinh Minh Quan" }]
+keywords = ["nlp", "information-retrieval", "dense-retrieval", "search", "arxiv", "rag", "agent"]
+
+# Core deps only — the package, the BM25 + TF-IDF retrievers, the search engine,
+# the agent, faceting/clustering, and the tests all run with just these (no torch).
+# Heavy ML / serving libs are extras, imported lazily.
+dependencies = [
+    "numpy>=1.23",
+    "pyyaml>=6.0",
+    "pydantic>=2.0",
+    "scikit-learn>=1.2",
+]
+
+[project.optional-dependencies]
+ml = [
+    "torch>=2.1", "transformers>=4.40", "sentence-transformers>=3.0",
+    "datasets>=2.18", "accelerate>=0.30", "faiss-cpu>=1.7",
+]
+api = ["fastapi>=0.110", "uvicorn[standard]>=0.29", "gradio>=4.0"]
+report = ["reportlab>=4.0", "python-pptx>=0.6.23", "matplotlib>=3.7"]
+dev = ["pytest>=7.4", "ruff>=0.4"]
+all = [
+    "torch>=2.1", "transformers>=4.40", "sentence-transformers>=3.0", "datasets>=2.18",
+    "accelerate>=0.30", "faiss-cpu>=1.7",
+    "fastapi>=0.110", "uvicorn[standard]>=0.29", "gradio>=4.0",
+    "reportlab>=4.0", "python-pptx>=0.6.23", "matplotlib>=3.7",
+]
+
+[project.scripts]
+scisearch = "scisearch.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+scisearch = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"

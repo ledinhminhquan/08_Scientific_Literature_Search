@@ -1,0 +1,17 @@
+services:
+  scisearch:
+    build: .
+    image: scisearch:latest
+    ports:
+      - "7860:7860"
+    environment:
+      SCISEARCH_ARTIFACTS_DIR: /artifacts
+      HF_HOME: /root/.cache/huggingface
+      # SCISEARCH_LLM_API_KEY: ${ANTHROPIC_API_KEY}   # optional LLM brain
+    volumes:
+      - ./artifacts:/artifacts
+      - hf_cache:/root/.cache/huggingface
+    command: uvicorn scisearch.api.app_combined:app --host 0.0.0.0 --port 7860
+
+volumes:
+  hf_cache:
